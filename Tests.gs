@@ -169,7 +169,7 @@ function testDoPostValidInput() {
       store: 'Test Store',
       branch: 'Test Branch',
       note: 'Test note',
-      samplingDate: '30-12-2025',
+      samplingDate: '30/12/2025',
       clothingGrooming: '4',
       workingAttitude: '5',
       productKnowledge: '3',
@@ -201,8 +201,8 @@ function testDoPostValidInput() {
       if (data[4] !== 'Test Branch') {
         throw new Error('Fifth column should be branch');
       }
-      if (data[9] !== '30-12-2025') {
-        throw new Error('Tenth column should be evaluation date');
+      if (data[9] !== "'30/12/2025") {
+        throw new Error('Tenth column should be sampling date with prefix');
       }
       if (data[10] !== 4) {
         throw new Error('Eleventh column should be clothing/grooming rating (4)');
@@ -273,7 +273,7 @@ function testDoPostWithStoreAndBranch() {
       store: 'Main Store',
       branch: 'Central Branch',
       note: 'Integration test note',
-      samplingDate: '30-12-2025',
+      samplingDate: '30/12/2025',
       clothingGrooming: '5',
       workingAttitude: '4',
       productKnowledge: '5',
@@ -312,7 +312,7 @@ function testDoPostInvalidCoordinates() {
       store: 'Test Store',
       branch: 'Test Branch',
       note: 'Test with invalid coordinates',
-      samplingDate: '30-12-2025',
+      samplingDate: '30/12/2025',
       clothingGrooming: '3',
       workingAttitude: '4',
       productKnowledge: '3',
@@ -366,7 +366,7 @@ function createTestEvent(name, area, lat, lng, store, branch, note, samplingDate
       store: store || 'Test Store',
       branch: branch || 'Test Branch',
       note: note || 'Test note',
-      samplingDate: samplingDate || '30-12-2025',
+      samplingDate: samplingDate || '30/12/2025',
       clothingGrooming: clothingGrooming || '4',
       workingAttitude: workingAttitude || '4',
       productKnowledge: productKnowledge || '3',
@@ -408,7 +408,7 @@ function testEvaluationRatingsValidation() {
       store: 'Test Store',
       branch: 'Test Branch',
       note: 'Test note',
-      samplingDate: '30-12-2025',
+      samplingDate: '30/12/2025',
       clothingGrooming: '6',  // Invalid - out of range
       workingAttitude: '4',
       productKnowledge: '3',
@@ -446,7 +446,7 @@ function testEvaluationRatingsValidation() {
       store: 'Test Store',
       branch: 'Test Branch',
       note: 'Test note',
-      samplingDate: '30-12-2025',
+      samplingDate: '30/12/2025',
       clothingGrooming: '5',
       workingAttitude: '4',
       productKnowledge: '3',

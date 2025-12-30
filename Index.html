@@ -729,13 +729,13 @@
       });
     }
 
-    // Function to format date from YYYY-MM-DD (HTML5 date input) to DD-MM-YYYY
+    // Function to format date from YYYY-MM-DD (HTML5 date input) to DD/MM/YYYY
     function formatDateToDDMMYYYY(dateString) {
       if (!dateString) return '';
       const parts = dateString.split('-');
       if (parts.length === 3) {
         const [year, month, day] = parts;
-        return `${day.padStart(2, '0')}-${month.padStart(2, '0')}-${year}`;
+        return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
       }
       return dateString;
     }
@@ -765,7 +765,7 @@
           params.append(pair[0], pair[1]);
         }
 
-        // Add sampling date in DD-MM-YYYY format
+        // Add sampling date in DD/MM/YYYY format
         const samplingDateInput = document.getElementById('samplingDate').value;
         params.set('samplingDate', formatDateToDDMMYYYY(samplingDateInput));
 

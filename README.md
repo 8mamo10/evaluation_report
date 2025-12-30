@@ -23,7 +23,7 @@ The system creates one evaluation record per submission. Each record contains:
 - **Store**: Selected store (from Store sheet)
 - **Branch**: Selected branch (based on store selection)
 - **Location**: GPS coordinates (automatic)
-- **Sampling Date**: Date of evaluation (DD-MM-YYYY format)
+- **Sampling Date**: Date of evaluation (DD/MM/YYYY format)
 - **Five Evaluation Ratings**: Each rated 1-5
   - Clothing and Grooming
   - Working Attitude
@@ -57,7 +57,7 @@ Main data storage with 15 columns (one record per evaluation):
 7. Longitude
 8. Address
 9. Note
-10. Sampling Date (DD-MM-YYYY)
+10. Sampling Date (DD/MM/YYYY)
 11. Clothing and Grooming (1-5)
 12. Working Attitude (1-5)
 13. Product Knowledge (1-5)
