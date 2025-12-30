@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>PG Evaluation Report</title>
+  <style>
+    /* Login Page Styles */
+    .login-container {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      margin: 20px;
+    }
+
+    .login-container h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 1.8em;
+    }
+
+    /* Rating Star Styles */
+    .rating-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    .rating-stars {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 5px;
+    }
+
+    .star {
+      font-size: 2em;
+      cursor: pointer;
+      color: #ddd;
+      transition: color 0.2s;
+      user-select: none;
+    }
+
+    .star.active {
+      color: #ffd700;
+    }
+
+    .star:hover {
+      color: #ffed4e;
+    }
+
+    .evaluation-section {
+      margin-top: 30px;
+      border-top: 2px solid #e0e0e0;
+      padding-top: 20px;
+    }
+
+    .evaluation-section h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .login-container input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    .login-message {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 0.9em;
+    }
+
+    .login-message.error {
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef5350;
+    }
+
+    .login-message.success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #66bb6a;
+    }
+
+    /* Hide/show login vs main form */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f7f6;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    select,
+    textarea {
+      width: 100%;
+    }
+
+    textarea {
+      resize: vertical;
+      font-family: inherit;
+      min-height: 60px;
+    }
+
+
+
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+      color: #28a745;
+      /* Success color */
+      min-height: 1.2em;
+      /* Ensure space even when empty */
+    }
+
+    #message.error {
+      color: #dc3545;
+      /* Error color */
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Login Container -->
+  <div id="loginContainer" class="login-container">
+    <h1>PG Evaluation Login</h1>
+    <form id="loginForm">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required autofocus>
+      <button type="submit" id="loginButton">Login</button>
+      <div id="loginMessage" class="login-message" style="display: none;"></div>
+    </form>
+  </div>
+
+  <!-- Main Form Container -->
+  <div id="mainContainer" class="container hidden">
+    <h1>PG Evaluation Report</h1>
+    <form id="evaluationForm">
+      <label for="name">Your Name:</label>
+      <select id="name" name="name" required>
+        <option value="">👤 Loading names...</option>
+      </select><br>
+
+      <label for="area">Area:</label>
+      <select id="area" name="area" required>
+        <option value="">🌍 Loading areas...</option>
+      </select><br>
+
+      <label for="store">Store:</label>
+      <select id="store" name="store" required>
+        <option value="">🏪 Loading stores...</option>
+      </select><br>
+
+      <label for="branch">Branch:</label>
+      <select id="branch" name="branch" required>
+        <option value="">🏢 Select store first</option>
+      </select><br>
+
+      <label for="note">Note:</label>
+      <textarea id="note" name="note" placeholder="Enter any additional notes..." rows="3"></textarea><br>
+
+      <input type="hidden" id="latitude" name="latitude">
+      <input type="hidden" id="longitude" name="longitude">
+
+      <!-- Evaluation Section -->
+      <div id="evaluationSection" class="evaluation-section">
+        <h2>Evaluation Criteria</h2>
+
+        <label for="evaluationDate">Evaluation Date: <span style="color: red;">*</span></label>
+        <input type="date" id="evaluationDate" name="evaluationDate" required><br>
+
+        <div class="rating-container">
+          <label>Clothing and Grooming: <span style="color: red;">*</span></label>
+          <div class="star-rating" id="clothingGrooming-rating">
+            <span class="star" data-rating="1" data-field="clothingGrooming">★</span>
+            <span class="star" data-rating="2" data-field="clothingGrooming">★</span>
+            <span class="star" data-rating="3" data-field="clothingGrooming">★</span>
+            <span class="star" data-rating="4" data-field="clothingGrooming">★</span>
+            <span class="star" data-rating="5" data-field="clothingGrooming">★</span>
+          </div>
+          <input type="hidden" id="clothingGrooming" name="clothingGrooming" value="">
+        </div>
+
+        <div class="rating-container">
+          <label>Working Attitude: <span style="color: red;">*</span></label>
+          <div class="star-rating" id="workingAttitude-rating">
+            <span class="star" data-rating="1" data-field="workingAttitude">★</span>
+            <span class="star" data-rating="2" data-field="workingAttitude">★</span>
+            <span class="star" data-rating="3" data-field="workingAttitude">★</span>
+            <span class="star" data-rating="4" data-field="workingAttitude">★</span>
+            <span class="star" data-rating="5" data-field="workingAttitude">★</span>
+          </div>
+          <input type="hidden" id="workingAttitude" name="workingAttitude" value="">
+        </div>
+
+        <div class="rating-container">
+          <label>Product Knowledge: <span style="color: red;">*</span></label>
+          <div class="star-rating" id="productKnowledge-rating">
+            <span class="star" data-rating="1" data-field="productKnowledge">★</span>
+            <span class="star" data-rating="2" data-field="productKnowledge">★</span>
+            <span class="star" data-rating="3" data-field="productKnowledge">★</span>
+            <span class="star" data-rating="4" data-field="productKnowledge">★</span>
+            <span class="star" data-rating="5" data-field="productKnowledge">★</span>
+          </div>
+          <input type="hidden" id="productKnowledge" name="productKnowledge" value="">
+        </div>
+
+        <div class="rating-container">
+          <label>Consulting Skill: <span style="color: red;">*</span></label>
+          <div class="star-rating" id="consultingSkill-rating">
+            <span class="star" data-rating="1" data-field="consultingSkill">★</span>
+            <span class="star" data-rating="2" data-field="consultingSkill">★</span>
+            <span class="star" data-rating="3" data-field="consultingSkill">★</span>
+            <span class="star" data-rating="4" data-field="consultingSkill">★</span>
+            <span class="star" data-rating="5" data-field="consultingSkill">★</span>
+          </div>
+          <input type="hidden" id="consultingSkill" name="consultingSkill" value="">
+        </div>
+
+        <div class="rating-container">
+          <label>Product Display: <span style="color: red;">*</span></label>
+          <div class="star-rating" id="productDisplay-rating">
+            <span class="star" data-rating="1" data-field="productDisplay">★</span>
+            <span class="star" data-rating="2" data-field="productDisplay">★</span>
+            <span class="star" data-rating="3" data-field="productDisplay">★</span>
+            <span class="star" data-rating="4" data-field="productDisplay">★</span>
+            <span class="star" data-rating="5" data-field="productDisplay">★</span>
+          </div>
+          <input type="hidden" id="productDisplay" name="productDisplay" value="">
+        </div>
+      </div>
+    </form>
+
+    <div style="margin-top: 30px;">
+      <button type="submit" id="submitButton" form="evaluationForm">Register</button>
+    </div>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    // Login elements
+    const loginContainer = document.getElementById('loginContainer');
+    const mainContainer = document.getElementById('mainContainer');
+    const loginForm = document.getElementById('loginForm');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('loginButton');
+    const loginMessageDiv = document.getElementById('loginMessage');
+
+    // Main form elements
+    const form = document.getElementById('evaluationForm');
+    const messageDiv = document.getElementById('message');
+    const latitudeInput = document.getElementById('latitude');
+    const longitudeInput = document.getElementById('longitude');
+    const submitButton = document.getElementById('submitButton');
+    const nameSelect = document.getElementById('name');
+    const areaSelect = document.getElementById('area');
+    const storeSelect = document.getElementById('store');
+    const branchSelect = document.getElementById('branch');
+    let storesData = {};
+
+    // Login Logic
+    // Check if already authenticated via sessionStorage
+    window.addEventListener('load', function() {
+      const authToken = sessionStorage.getItem('merchandiserReportAuth');
+      if (authToken) {
+        // Verify the token is still valid
+        google.script.run
+          .withSuccessHandler(function(isValid) {
+            if (isValid) {
+              // Token is valid, show main form
+              showMainForm();
+            } else {
+              // Token expired, show login
+              sessionStorage.removeItem('merchandiserReportAuth');
+              showLogin();
+            }
+          })
+          .withFailureHandler(function(error) {
+            // Error checking token, show login
+            sessionStorage.removeItem('merchandiserReportAuth');
+            showLogin();
+          })
+          .isAuthenticated(authToken);
+      } else {
+        // No token, show login
+        showLogin();
+      }
+    });
+
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const password = passwordInput.value;
+
+      if (!password) {
+        showLoginMessage('Please enter a password', 'error');
+        return;
+      }
+
+      loginButton.disabled = true;
+      showLoginMessage('Verifying...', '');
+
+      // Verify password with server
+      google.script.run
+        .withSuccessHandler(function(sessionToken) {
+          if (sessionToken) {
+            // Store token in sessionStorage
+            sessionStorage.setItem('merchandiserReportAuth', sessionToken);
+            showLoginMessage('Login successful! Loading form...', 'success');
+
+            // Show main form
+            setTimeout(function() {
+              showMainForm();
+            }, 500);
+          } else {
+            showLoginMessage('Invalid password. Please try again.', 'error');
+            loginButton.disabled = false;
+            passwordInput.value = '';
+            passwordInput.focus();
+          }
+        })
+        .withFailureHandler(function(error) {
+          console.error('Login error:', error);
+          showLoginMessage('Login failed: ' + error.message, 'error');
+          loginButton.disabled = false;
+        })
+        .verifyPassword(password);
+    });
+
+    function showLogin() {
+      loginContainer.classList.remove('hidden');
+      mainContainer.classList.add('hidden');
+    }
+
+    function showMainForm() {
+      loginContainer.classList.add('hidden');
+      mainContainer.classList.remove('hidden');
+
+      // Load data for dropdowns
+      loadNames();
+      loadAreas();
+      loadStores();
+
+      // Initially disable store and branch selects
+      storeSelect.disabled = true;
+      branchSelect.disabled = true;
+
+      // Setup star rating listeners
+      setupStarRatings();
+    }
+
+    function showLoginMessage(text, type) {
+      loginMessageDiv.textContent = text;
+      loginMessageDiv.className = 'login-message ' + type;
+      loginMessageDiv.style.display = 'block';
+    }
+
+    // Function to load names from server
+    function loadNames() {
+      google.script.run
+        .withSuccessHandler(function (names) {
+          nameSelect.innerHTML = '';
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.textContent = '👤 Select your name';
+          nameSelect.appendChild(defaultOption);
+
+          names.forEach(function (name) {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            nameSelect.appendChild(option);
+          });
+        })
+        .withFailureHandler(function (error) {
+          console.error('Failed to load names:', error);
+          nameSelect.innerHTML = '<option value="">❌ Failed to load names</option>';
+          messageDiv.textContent = 'Failed to load names: ' + error.message;
+          messageDiv.className = 'error';
+        })
+        .getMemberList();
+    }
+
+    // Function to load areas from server
+    function loadAreas() {
+      google.script.run
+        .withSuccessHandler(function (areas) {
+          areaSelect.innerHTML = '';
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.textContent = '🌍 Select area';
+          areaSelect.appendChild(defaultOption);
+
+          areas.forEach(function (area) {
+            const option = document.createElement('option');
+            option.value = area;
+            option.textContent = area;
+            areaSelect.appendChild(option);
+          });
+        })
+        .withFailureHandler(function (error) {
+          console.error('Failed to load areas:', error);
+          areaSelect.innerHTML = '<option value="">❌ Failed to load areas</option>';
+          messageDiv.textContent = 'Failed to load areas: ' + error.message;
+          messageDiv.className = 'error';
+        })
+        .getAreaList();
+    }
+
+
+    // Function to load stores from server
+    function loadStores() {
+      google.script.run
+        .withSuccessHandler(function (data) {
+          storesData = data;
+          storeSelect.innerHTML = '';
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.textContent = '🏪 Select store';
+          storeSelect.appendChild(defaultOption);
+
+          data.store.forEach(function (store) {
+            const option = document.createElement('option');
+            option.value = store;
+            option.textContent = store;
+            storeSelect.appendChild(option);
+          });
+        })
+        .withFailureHandler(function (error) {
+          console.error('Failed to load stores:', error);
+          storeSelect.innerHTML = '<option value="">❌ Failed to load stores</option>';
+          messageDiv.textContent = 'Failed to load stores: ' + error.message;
+          messageDiv.className = 'error';
+        })
+        .getStoreList();
+    }
+
+    // Function to populate stores based on selected area
+    function populateStoresByArea() {
+      const selectedArea = areaSelect.value;
+      storeSelect.innerHTML = '';
+      branchSelect.innerHTML = '';
+
+      if (selectedArea && storesData.areaStoreMap && storesData.areaStoreMap[selectedArea]) {
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '🏢 Select store';
+        storeSelect.appendChild(defaultOption);
+
+        storesData.areaStoreMap[selectedArea].forEach(function (store) {
+          const option = document.createElement('option');
+          option.value = store;
+          option.textContent = store;
+          storeSelect.appendChild(option);
+        });
+
+        // Enable store select
+        storeSelect.disabled = false;
+      } else {
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '🏢 Select area first';
+        storeSelect.appendChild(defaultOption);
+
+        // Disable store select until area is chosen
+        storeSelect.disabled = true;
+      }
+
+      // Reset branch dropdown
+      const branchDefaultOption = document.createElement('option');
+      branchDefaultOption.value = '';
+      branchDefaultOption.textContent = '🏢 Select store first';
+      branchSelect.appendChild(branchDefaultOption);
+      branchSelect.disabled = true;
+    }
+
+    // Function to populate branches based on selected area and store
+    function populateBranchesByAreaAndStore() {
+      const selectedArea = areaSelect.value;
+      const selectedStore = storeSelect.value;
+      branchSelect.innerHTML = '';
+
+      if (selectedArea && selectedStore && storesData.areaStoreBranchMap) {
+        const areaStoreKey = `${selectedArea}|${selectedStore}`;
+        if (storesData.areaStoreBranchMap[areaStoreKey]) {
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.textContent = '🏢 Select branch';
+          branchSelect.appendChild(defaultOption);
+
+          storesData.areaStoreBranchMap[areaStoreKey].forEach(function (branch) {
+            const option = document.createElement('option');
+            option.value = branch;
+            option.textContent = branch;
+            branchSelect.appendChild(option);
+          });
+
+          // Enable branch select
+          branchSelect.disabled = false;
+        } else {
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.textContent = '🏢 No branches available';
+          branchSelect.appendChild(defaultOption);
+          branchSelect.disabled = true;
+        }
+      } else if (selectedArea && !selectedStore) {
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '🏢 Select store first';
+        branchSelect.appendChild(defaultOption);
+        branchSelect.disabled = true;
+      } else {
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '🏢 Select area first';
+        branchSelect.appendChild(defaultOption);
+        branchSelect.disabled = true;
+      }
+    }
+
+    // Handle area selection to populate stores and reset branches
+    areaSelect.addEventListener('change', function () {
+      populateStoresByArea();
+      populateBranchesByAreaAndStore(); // Reset branches
+    });
+
+    // Handle store selection to populate branches
+    storeSelect.addEventListener('change', function () {
+      populateBranchesByAreaAndStore();
+    });
+
+    // Setup star rating functionality
+    function setupStarRatings() {
+      const ratingFields = ['clothingGrooming', 'workingAttitude', 'productKnowledge', 'consultingSkill', 'productDisplay'];
+
+      ratingFields.forEach(fieldName => {
+        const stars = document.querySelectorAll(`[data-field="${fieldName}"]`);
+        const hiddenInput = document.getElementById(fieldName);
+
+        stars.forEach(star => {
+          star.addEventListener('click', function () {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            hiddenInput.value = rating;
+
+            // Update star display
+            stars.forEach(s => {
+              const starRating = parseInt(s.getAttribute('data-rating'));
+              if (starRating <= rating) {
+                s.classList.add('active');
+              } else {
+                s.classList.remove('active');
+              }
+            });
+          });
+
+          // Hover effect
+          star.addEventListener('mouseenter', function () {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            stars.forEach(s => {
+              const starRating = parseInt(s.getAttribute('data-rating'));
+              if (starRating <= rating) {
+                s.style.color = '#ffed4e';
+              }
+            });
+          });
+
+          star.addEventListener('mouseleave', function () {
+            const currentRating = parseInt(hiddenInput.value) || 0;
+            stars.forEach(s => {
+              const starRating = parseInt(s.getAttribute('data-rating'));
+              if (starRating <= currentRating) {
+                s.style.color = '#ffd700';
+              } else {
+                s.style.color = '#ddd';
+              }
+            });
+          });
+        });
+      });
+    }
+
+    // Function to clear evaluation ratings
+    function clearEvaluationRatings() {
+      const ratingFields = ['clothingGrooming', 'workingAttitude', 'productKnowledge', 'consultingSkill', 'productDisplay'];
+
+      ratingFields.forEach(fieldName => {
+        document.getElementById(fieldName).value = '';
+        const stars = document.querySelectorAll(`[data-field="${fieldName}"]`);
+        stars.forEach(star => star.classList.remove('active'));
+      });
+
+      document.getElementById('evaluationDate').value = '';
+    }
+
+    // Function to get geolocation
+    function getLocation() {
+      return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              latitudeInput.value = position.coords.latitude;
+              longitudeInput.value = position.coords.longitude;
+              resolve();
+            },
+            (error) => {
+              console.error("Failed to get location:", error);
+              let errorMessage = 'Failed to get location.';
+              switch (error.code) {
+                case error.PERMISSION_DENIED:
+                  errorMessage = 'Location access denied. Please allow location access in your browser settings.';
+                  break;
+                case error.POSITION_UNAVAILABLE:
+                  errorMessage = 'Location information is unavailable.';
+                  break;
+                case error.TIMEOUT:
+                  errorMessage = 'The request to get user location timed out.';
+                  break;
+                case error.UNKNOWN_ERROR:
+                  errorMessage = 'An unknown error occurred while getting location.';
+                  break;
+              }
+              messageDiv.textContent = errorMessage;
+              messageDiv.className = 'error'; // Add error class for styling
+              reject(error);
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 10000, // Increased timeout for potentially slower mobile connections
+              maximumAge: 0
+            }
+          );
+        } else {
+          messageDiv.textContent = 'Your browser does not support geolocation.';
+          messageDiv.className = 'error';
+          reject(new Error("Geolocation not supported"));
+        }
+      });
+    }
+
+    // Function to format date from YYYY-MM-DD (HTML5 date input) to DD-MM-YYYY
+    function formatDateToDDMMYYYY(dateString) {
+      if (!dateString) return '';
+      const parts = dateString.split('-');
+      if (parts.length === 3) {
+        const [year, month, day] = parts;
+        return `${day.padStart(2, '0')}-${month.padStart(2, '0')}-${year}`;
+      }
+      return dateString;
+    }
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault(); // Prevent default form submission
+
+      submitButton.disabled = true; // Disable button to prevent multiple submissions
+      messageDiv.textContent = 'Getting location...';
+      messageDiv.className = ''; // Reset class
+
+      // Try to get location, but don't fail if it's not available
+      try {
+        await getLocation();
+      } catch (locationError) {
+        console.log('Location could not be obtained:', locationError);
+        // Set placeholder values to indicate GPS failure
+        latitudeInput.value = 'GPS_FAILED';
+        longitudeInput.value = 'GPS_FAILED';
+        messageDiv.textContent = 'Location unavailable, proceeding with registration...';
+      }
+
+      try {
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        for (const pair of formData) {
+          params.append(pair[0], pair[1]);
+        }
+
+        // Add evaluation date in DD-MM-YYYY format
+        const evaluationDateInput = document.getElementById('evaluationDate').value;
+        params.set('evaluationDate', formatDateToDDMMYYYY(evaluationDateInput));
+
+        // Add authentication token from sessionStorage
+        const authToken = sessionStorage.getItem('merchandiserReportAuth');
+        if (!authToken) {
+          messageDiv.textContent = 'Session expired. Please log in again.';
+          messageDiv.className = 'error';
+          // Reload page to go back to login
+          setTimeout(function() {
+            window.location.reload();
+          }, 2000);
+          return;
+        }
+        params.append('authToken', authToken);
+
+        messageDiv.textContent = 'Registering evaluation...';
+
+        // IMPORTANT: Replace 'YOUR_DEPLOYED_WEB_APP_URL' with your actual GAS Web App URL
+        const response = await fetch('YOUR_DEPLOYED_WEB_APP_URL', {
+          method: 'POST',
+          body: params,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+
+        const data = await response.json();
+        if (data.status === 'success') {
+          messageDiv.textContent = data.message;
+          messageDiv.className = ''; // Success class is default (no error class)
+
+          // Clear form but keep Name and Area values
+          const nameValue = nameSelect.value;
+          const areaValue = areaSelect.value;
+
+          form.reset(); // Reset main form
+          clearEvaluationRatings(); // Clear evaluation ratings
+
+          // Restore Name and Area values
+          nameSelect.value = nameValue;
+          areaSelect.value = areaValue;
+
+          // Re-populate stores and branches based on the kept area selection
+          if (areaValue) {
+            populateStoresByArea();
+          }
+        } else {
+          messageDiv.textContent = 'Error: ' + data.message;
+          messageDiv.className = 'error'; // Add error class
+
+          // If authentication error, redirect to login
+          if (data.message && data.message.includes('Authentication failed')) {
+            sessionStorage.removeItem('merchandiserReportAuth');
+            setTimeout(function() {
+              window.location.reload();
+            }, 2000);
+          }
+        }
+      } catch (error) {
+        console.error('Error during registration process:', error);
+        if (messageDiv.textContent === 'Getting location...') { // Only if location failed or prior
+          messageDiv.textContent = messageDiv.textContent + ' Please try again.'; // Append more info if needed
+        } else {
+          messageDiv.textContent = 'An error occurred during registration. Please try again.';
+        }
+        messageDiv.className = 'error';
+      } finally {
+        submitButton.disabled = false; // Re-enable button
+      }
+    });
+  </script>
+</body>
+
+</html>
