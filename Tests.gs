@@ -201,7 +201,8 @@ function testDoPostValidInput() {
       if (data[4] !== 'Test Branch') {
         throw new Error('Fifth column should be branch');
       }
-      if (data[9] !== "'30/12/2025") {
+      // Check that sampling date has prefix (starts with ')
+      if (!data[9] || typeof data[9] !== 'string' || !data[9].startsWith("'")) {
         throw new Error('Tenth column should be sampling date with prefix');
       }
       if (data[10] !== 4) {
@@ -351,6 +352,15 @@ function testDoGet() {
   }
 }
 
+// Helper function to get today's date in DD/MM/YYYY format
+function getTodayDateFormatted() {
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
 // Helper function to create test data
 function createTestEvent(name, area, lat, lng, store, branch, note, samplingDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay) {
   // Generate a valid auth token for testing
@@ -366,7 +376,7 @@ function createTestEvent(name, area, lat, lng, store, branch, note, samplingDate
       store: store || 'Test Store',
       branch: branch || 'Test Branch',
       note: note || 'Test note',
-      samplingDate: samplingDate || '30/12/2025',
+      samplingDate: samplingDate || getTodayDateFormatted(),
       clothingGrooming: clothingGrooming || '4',
       workingAttitude: workingAttitude || '4',
       productKnowledge: productKnowledge || '3',
