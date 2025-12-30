@@ -257,8 +257,8 @@
       <div id="evaluationSection" class="evaluation-section">
         <h2>Evaluation Criteria</h2>
 
-        <label for="evaluationDate">Evaluation Date: <span style="color: red;">*</span></label>
-        <input type="date" id="evaluationDate" name="evaluationDate" required><br>
+        <label for="samplingDate">Sampling Date: <span style="color: red;">*</span></label>
+        <input type="date" id="samplingDate" name="samplingDate" required><br>
 
         <div class="rating-container">
           <label>Clothing and Grooming: <span style="color: red;">*</span></label>
@@ -681,7 +681,7 @@
         stars.forEach(star => star.classList.remove('active'));
       });
 
-      document.getElementById('evaluationDate').value = '';
+      document.getElementById('samplingDate').value = '';
     }
 
     // Function to get geolocation
@@ -765,9 +765,9 @@
           params.append(pair[0], pair[1]);
         }
 
-        // Add evaluation date in DD-MM-YYYY format
-        const evaluationDateInput = document.getElementById('evaluationDate').value;
-        params.set('evaluationDate', formatDateToDDMMYYYY(evaluationDateInput));
+        // Add sampling date in DD-MM-YYYY format
+        const samplingDateInput = document.getElementById('samplingDate').value;
+        params.set('samplingDate', formatDateToDDMMYYYY(samplingDateInput));
 
         // Add authentication token from sessionStorage
         const authToken = sessionStorage.getItem('pgEvaluationAuth');

@@ -169,7 +169,7 @@ function testDoPostValidInput() {
       store: 'Test Store',
       branch: 'Test Branch',
       note: 'Test note',
-      evaluationDate: '30-12-2025',
+      samplingDate: '30-12-2025',
       clothingGrooming: '4',
       workingAttitude: '5',
       productKnowledge: '3',
@@ -184,7 +184,7 @@ function testDoPostValidInput() {
       console.log('Mock appendRow called with:', data);
       // Verify updated data structure (15 columns for evaluation system)
       if (data.length !== 15) {
-        throw new Error('Expected 15 columns in data: timestamp, name, area, store, branch, latitude, longitude, address, note, evaluationDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay');
+        throw new Error('Expected 15 columns in data: timestamp, name, area, store, branch, latitude, longitude, address, note, samplingDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay');
       }
       if (typeof data[0] !== 'string' || !data[0].match(/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/)) {
         throw new Error('First column should be formatted timestamp (DD/MM/YYYY HH:MM:SS)');
@@ -273,7 +273,7 @@ function testDoPostWithStoreAndBranch() {
       store: 'Main Store',
       branch: 'Central Branch',
       note: 'Integration test note',
-      evaluationDate: '30-12-2025',
+      samplingDate: '30-12-2025',
       clothingGrooming: '5',
       workingAttitude: '4',
       productKnowledge: '5',
@@ -312,7 +312,7 @@ function testDoPostInvalidCoordinates() {
       store: 'Test Store',
       branch: 'Test Branch',
       note: 'Test with invalid coordinates',
-      evaluationDate: '30-12-2025',
+      samplingDate: '30-12-2025',
       clothingGrooming: '3',
       workingAttitude: '4',
       productKnowledge: '3',
@@ -352,7 +352,7 @@ function testDoGet() {
 }
 
 // Helper function to create test data
-function createTestEvent(name, area, lat, lng, store, branch, note, evaluationDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay) {
+function createTestEvent(name, area, lat, lng, store, branch, note, samplingDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay) {
   // Generate a valid auth token for testing
   const validAuthToken = generateSessionToken();
 
@@ -366,7 +366,7 @@ function createTestEvent(name, area, lat, lng, store, branch, note, evaluationDa
       store: store || 'Test Store',
       branch: branch || 'Test Branch',
       note: note || 'Test note',
-      evaluationDate: evaluationDate || '30-12-2025',
+      samplingDate: samplingDate || '30-12-2025',
       clothingGrooming: clothingGrooming || '4',
       workingAttitude: workingAttitude || '4',
       productKnowledge: productKnowledge || '3',
@@ -408,7 +408,7 @@ function testEvaluationRatingsValidation() {
       store: 'Test Store',
       branch: 'Test Branch',
       note: 'Test note',
-      evaluationDate: '30-12-2025',
+      samplingDate: '30-12-2025',
       clothingGrooming: '6',  // Invalid - out of range
       workingAttitude: '4',
       productKnowledge: '3',
@@ -446,7 +446,7 @@ function testEvaluationRatingsValidation() {
       store: 'Test Store',
       branch: 'Test Branch',
       note: 'Test note',
-      evaluationDate: '30-12-2025',
+      samplingDate: '30-12-2025',
       clothingGrooming: '5',
       workingAttitude: '4',
       productKnowledge: '3',

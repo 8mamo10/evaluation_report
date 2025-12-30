@@ -36,7 +36,7 @@ The system uses session-based authentication:
 3. User selects store → populates branches for that area-store combination
 4. User selects branch → ready to complete evaluation form
 5. User fills evaluation fields:
-   - Evaluation Date (calendar input, stored as DD-MM-YYYY)
+   - Sampling Date (calendar input, stored as DD-MM-YYYY)
    - Clothing and Grooming (1-5 star rating)
    - Working Attitude (1-5 star rating)
    - Product Knowledge (1-5 star rating)
@@ -134,7 +134,7 @@ The Record sheet contains 15 columns (one record per evaluation):
 7. **Longitude**: GPS coordinates
 8. **Address**: Geocoded address from coordinates
 9. **Note**: General notes (optional free text)
-10. **Evaluation Date**: Date of evaluation (DD-MM-YYYY format)
+10. **Sampling Date**: Date of evaluation (DD-MM-YYYY format)
 11. **Clothing and Grooming**: Rating 1-5 (integer)
 12. **Working Attitude**: Rating 1-5 (integer)
 13. **Product Knowledge**: Rating 1-5 (integer)

@@ -105,7 +105,7 @@ function doPost(e) {
   const store = e.parameter.store || '';
   const branch = e.parameter.branch || '';
   const note = (e.parameter.note || '').trim();
-  const evaluationDate = e.parameter.evaluationDate || '';
+  const samplingDate = e.parameter.samplingDate || '';
   const clothingGrooming = e.parameter.clothingGrooming || '';
   const workingAttitude = e.parameter.workingAttitude || '';
   const productKnowledge = e.parameter.productKnowledge || '';
@@ -118,8 +118,8 @@ function doPost(e) {
   }
 
   // Validate evaluation fields
-  if (!evaluationDate) {
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Evaluation Date is required' }))
+  if (!samplingDate) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Sampling Date is required' }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 
@@ -183,7 +183,7 @@ function doPost(e) {
     finalLongitude,
     address,
     note,
-    evaluationDate,
+    "'" + samplingDate,
     parseInt(clothingGrooming),
     parseInt(workingAttitude),
     parseInt(productKnowledge),
