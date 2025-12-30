@@ -227,6 +227,11 @@
   <div id="mainContainer" class="container hidden">
     <h1>PG Evaluation Report</h1>
     <form id="evaluationForm">
+      <label for="evaluator">Evaluator:</label>
+      <select id="evaluator" name="evaluator" required>
+        <option value="">👤 Loading evaluators...</option>
+      </select><br>
+
       <label for="name">Your Name:</label>
       <select id="name" name="name" required>
         <option value="">👤 Loading names...</option>
@@ -343,6 +348,7 @@
     const latitudeInput = document.getElementById('latitude');
     const longitudeInput = document.getElementById('longitude');
     const submitButton = document.getElementById('submitButton');
+    const evaluatorSelect = document.getElementById('evaluator');
     const nameSelect = document.getElementById('name');
     const areaSelect = document.getElementById('area');
     const storeSelect = document.getElementById('store');
@@ -428,6 +434,7 @@
       mainContainer.classList.remove('hidden');
 
       // Load data for dropdowns
+      loadEvaluators();
       loadNames();
       loadAreas();
       loadStores();
@@ -451,6 +458,30 @@
       loginMessageDiv.textContent = text;
       loginMessageDiv.className = 'login-message ' + type;
       loginMessageDiv.style.display = 'block';
+    }
+
+    // Function to load evaluators from server
+    function loadEvaluators() {
+      google.script.run
+        .withSuccessHandler(function (evaluators) {
+          evaluatorSelect.innerHTML = '';
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.textContent = '👤 Select evaluator';
+          evaluatorSelect.appendChild(defaultOption);
+
+          evaluators.forEach(function (evaluator) {
+            const option = document.createElement('option');
+            option.value = evaluator;
+            option.textContent = evaluator;
+            evaluatorSelect.appendChild(option);
+          });
+        })
+        .withFailureHandler(function (error) {
+          console.error('Failed to load evaluators:', error);
+          evaluatorSelect.innerHTML = '<option value="">❌ Failed to load evaluators</option>';
+        })
+        .getEvaluatorList();
     }
 
     // Function to load names from server

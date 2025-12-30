@@ -98,6 +98,7 @@ function doPost(e) {
   }
 
   // Get data sent via POST request
+  const evaluator = e.parameter.evaluator || '';
   const name = e.parameter.name;
   const area = e.parameter.area || '';
   const latitude = e.parameter.latitude;
@@ -112,7 +113,7 @@ function doPost(e) {
   const consultingSkill = e.parameter.consultingSkill || '';
   const productDisplay = e.parameter.productDisplay || '';
 
-  if (!name || !area || !latitude || !longitude || !store || !branch) {
+  if (!evaluator || !name || !area || !latitude || !longitude || !store || !branch) {
     return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Missing required basic information' }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -172,9 +173,10 @@ function doPost(e) {
     }
   }
 
-  // Prepare row data: 15 columns
+  // Prepare row data: 16 columns
   const rowData = [
     formattedTimestamp,
+    evaluator,
     name,
     area,
     store,
@@ -229,6 +231,36 @@ function doGet() {
 // Function to return HTML file content
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+// Function to get evaluator list
+function getEvaluatorList() {
+  const spreadSheetId = PropertiesService.getScriptProperties().getProperty('SpreadSheet_ID');
+  if (!spreadSheetId) {
+    throw new Error("Spreadsheet ID is not set in Script Properties.");
+  }
+
+  const evaluatorSheetName = PropertiesService.getScriptProperties().getProperty('Evaluator_Sheet_Name') || 'Evaluator';
+
+  const ss = SpreadsheetApp.openById(spreadSheetId);
+  const evaluatorSheet = ss.getSheetByName(evaluatorSheetName);
+
+  if (!evaluatorSheet) {
+    throw new Error(`Evaluator sheet "${evaluatorSheetName}" not found. Please create a sheet named "${evaluatorSheetName}" with names in column B.`);
+  }
+
+  // Get data from column with names (column B) starting from row 2
+  const range = evaluatorSheet.getRange('B2:B');
+  const values = range.getValues();
+
+  // Exclude blank cells and remove duplicates (maintain sheet order)
+  const evaluator = values
+    .map(row => row[0])
+    .filter(name => name && name.toString().trim() !== '')
+    .map(name => name.toString().trim())
+    .filter((name, index, arr) => arr.indexOf(name) === index); // Remove duplicates
+
+  return evaluator;
 }
 
 // Function to get member list

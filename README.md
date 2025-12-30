@@ -18,6 +18,7 @@ The system creates one evaluation record per submission. Each record contains:
 
 ### Required Fields
 
+- **Evaluator**: Evaluator name (from Evaluator sheet)
 - **Name**: Employee name (from Member sheet)
 - **Area**: Selected area (from Area sheet)
 - **Store**: Selected store (from Store sheet)
@@ -46,23 +47,28 @@ The system requires the following sheets in your Google Spreadsheet:
 
 ### Record Sheet
 
-Main data storage with 15 columns (one record per evaluation):
+Main data storage with 16 columns (one record per evaluation):
 
 1. Timestamp (DD/MM/YYYY HH:MM:SS)
-2. Name
-3. Area
-4. Store
-5. Branch
-6. Latitude
-7. Longitude
-8. Address
-9. Note
-10. Sampling Date (DD/MM/YYYY)
-11. Clothing and Grooming (1-5)
-12. Working Attitude (1-5)
-13. Product Knowledge (1-5)
-14. Consulting Skill (1-5)
-15. Product Display (1-5)
+2. Evaluator
+3. Name
+4. Area
+5. Store
+6. Branch
+7. Latitude
+8. Longitude
+9. Address
+10. Note
+11. Sampling Date (DD/MM/YYYY)
+12. Clothing and Grooming (1-5)
+13. Working Attitude (1-5)
+14. Product Knowledge (1-5)
+15. Consulting Skill (1-5)
+16. Product Display (1-5)
+
+### Evaluator Sheet
+
+- **Column B**: Evaluator names (starting from row 2)
 
 ### Member Sheet
 
@@ -90,8 +96,8 @@ Main data storage with 15 columns (one record per evaluation):
 ### 2. Google Sheets Setup
 
 1. Create a new Google Spreadsheet
-2. Create the required sheets: Record, Member, Area, Store
-3. Populate the Member, Area, and Store sheets with your data
+2. Create the required sheets: Record, Evaluator, Member, Area, Store
+3. Populate the Evaluator, Member, Area, and Store sheets with your data
 4. Note the spreadsheet ID from the URL
 
 ### 3. Script Properties Configuration
@@ -101,6 +107,7 @@ Set the following script properties in Google Apps Script:
 ```
 SpreadSheet_ID: Your Google Sheets ID
 Record_Sheet_Name: Name of your main record sheet
+Evaluator_Sheet_Name: Name of your evaluator sheet (default: 'Evaluator')
 Member_Sheet_Name: Name of your member sheet (default: 'Member')
 Area_Sheet_Name: Name of your area sheet (default: 'Area')
 Store_Sheet_Name: Name of your store sheet (default: 'Store')
@@ -126,11 +133,12 @@ Password: Your login password for authentication
 1. Access the deployed web application URL
 2. Login with your password
 3. Fill in all required fields:
+   - Select evaluator name from the dropdown
    - Select employee name from the dropdown
    - Choose the area
    - Select store and branch
    - Add general notes if needed
-   - Select sampling date using the calendar picker
+   - Select sampling date using the calendar picker (defaults to today)
    - Rate each of the five evaluation criteria using the star rating system (1-5):
      - Clothing and Grooming
      - Working Attitude
@@ -149,6 +157,7 @@ The system includes comprehensive tests. To run tests:
 runAllTests();
 
 // Run specific test categories
+testGetEvaluatorList();
 testGetMemberList();
 testGetAreaList();
 testGetStoreList();

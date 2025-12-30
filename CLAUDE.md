@@ -26,29 +26,32 @@ The system uses session-based authentication:
 1. **Authentication** (`verifyPassword`, `isAuthenticated`): Session token management with 24-hour expiration
 2. **Web App Handler** (`doPost`): Processes evaluation submissions with location and authentication validation
 3. **Geocoding Service** (`getAddressFromCoordinates`): Converts coordinates to addresses using Google Maps API
-4. **Data Sources**: Dynamically loads member, area, and store lists with area-store-branch mappings
+4. **Data Sources**: Dynamically loads evaluator, member, area, and store lists with area-store-branch mappings
 5. **HTML Interface** (`doGet`): Serves single-page app with login and evaluation form views
 
 ### Data Flow
 
 1. User authenticates with password → receives session token (stored in sessionStorage)
-2. User selects area → filters available stores by area
-3. User selects store → populates branches for that area-store combination
-4. User selects branch → ready to complete evaluation form
-5. User fills evaluation fields:
-   - Sampling Date (calendar input, stored as DD/MM/YYYY)
+2. User selects evaluator → identifies who is conducting the evaluation
+3. User selects employee name → identifies who is being evaluated
+4. User selects area → filters available stores by area
+5. User selects store → populates branches for that area-store combination
+6. User selects branch → ready to complete evaluation form
+7. User fills evaluation fields:
+   - Sampling Date (calendar input, stored as DD/MM/YYYY, defaults to today)
    - Clothing and Grooming (1-5 star rating)
    - Working Attitude (1-5 star rating)
    - Product Knowledge (1-5 star rating)
    - Consulting Skill (1-5 star rating)
    - Product Display (1-5 star rating)
-6. On submit: captures GPS location, validates token and all evaluation fields, geocodes coordinates
-7. System creates one evaluation record with complete 15-column data structure
-8. Form clears evaluation data but preserves Name and Area selections for next entry
+8. On submit: captures GPS location, validates token and all evaluation fields, geocodes coordinates
+9. System creates one evaluation record with complete 16-column data structure
+10. Form clears evaluation data but preserves Name and Area selections for next entry
 
 ### Google Sheets Structure
 
-- **Record Sheet**: Evaluation records (15 columns, one record per evaluation)
+- **Record Sheet**: Evaluation records (16 columns, one record per evaluation)
+- **Evaluator Sheet**: Evaluator names in column B (starting row 2)
 - **Member Sheet**: Employee names in column B (starting row 2)
 - **Area Sheet**: Area names in column A (starting row 2)
 - **Store Sheet**:
@@ -66,6 +69,7 @@ runAllTests()
 
 // Run specific test categories
 testGetAddressFromCoordinates()
+testGetEvaluatorList()
 testGetMemberList()
 testGetAreaList()
 testGetStoreList()
@@ -83,6 +87,7 @@ runPerformanceTest()
 ```
 SpreadSheet_ID: Google Sheets ID for data storage
 Record_Sheet_Name: Main evaluation records sheet name
+Evaluator_Sheet_Name: Sheet containing evaluator names (default: 'Evaluator')
 Member_Sheet_Name: Sheet containing employee names (default: 'Member')
 Area_Sheet_Name: Sheet containing area names (default: 'Area')
 Store_Sheet_Name: Sheet containing store/branch data (default: 'Store')
@@ -97,15 +102,17 @@ Password: Authentication password for login (REQUIRED for production)
 ## Key Implementation Details
 
 - **Authentication**: All POST requests require valid session token; expired/missing tokens return error and trigger re-login
-- **Evaluation Validation**: All five rating fields (1-5 scale) and evaluation date are required
+- **Evaluator System**: Evaluator selection required at form start to identify who is conducting the evaluation
+- **Evaluation Validation**: All five rating fields (1-5 scale) and sampling date are required
 - **Rating System**: Star-based UI for five evaluation criteria, each rated 1-5
-- **Single Record**: `doPost` creates one evaluation record per submission (15 columns)
+- **Single Record**: `doPost` creates one evaluation record per submission (16 columns)
 - **Error Handling**: Graceful degradation when geocoding or GPS fails (records "GPS not available" or "Failed to fetch address")
 - **Security**: API keys and passwords stored in Script Properties; session tokens expire after 24 hours
 - **Client-Side**: Single-page app with hidden/shown divs for login vs evaluation form; uses `sessionStorage` for auth token
 - **Dynamic Filtering**: Area → filters stores → populates branches
 - **Star Rating UI**: Interactive star rating system with hover effects and visual feedback
-- **Date Formatting**: Evaluation dates stored as DD/MM/YYYY format; timestamps use DD/MM/YYYY HH:MM:SS format
+- **Date Formatting**: Sampling dates stored as DD/MM/YYYY format with "'" prefix; timestamps use DD/MM/YYYY HH:MM:SS format
+- **Default Date**: Sampling date defaults to today's date on form load
 - **Form Persistence**: After successful submission, Name and Area preserved for convenience; evaluation data cleared
 
 ## Testing Strategy
@@ -114,7 +121,8 @@ The test suite in `Tests.gs` covers:
 - **API Integration**: Geocoding with mocked responses
 - **Authentication**: Token generation and validation
 - **Parameter Validation**: Missing parameters, missing evaluation fields
-- **Data Structure**: 15-column format validation, one record per evaluation
+- **Evaluator Validation**: Evaluator list loading and validation
+- **Data Structure**: 16-column format validation, one record per evaluation
 - **Rating Validation**: Rating range validation (1-5), invalid rating detection
 - **Configuration**: Graceful handling of missing Script Properties
 - **Performance**: Batch operation benchmarking
@@ -124,22 +132,23 @@ Tests are designed to work in both configured and unconfigured environments (fai
 
 ## Current Data Structure
 
-The Record sheet contains 15 columns (one record per evaluation):
+The Record sheet contains 16 columns (one record per evaluation):
 1. **Timestamp**: Automatic timestamp (DD/MM/YYYY HH:MM:SS)
-2. **Name**: User name from Member sheet (column B)
-3. **Area**: Selected area from Area sheet (column A)
-4. **Store**: Selected store from Store sheet (column A)
-5. **Branch**: Selected branch from Store sheet (column C)
-6. **Latitude**: GPS coordinates
-7. **Longitude**: GPS coordinates
-8. **Address**: Geocoded address from coordinates
-9. **Note**: General notes (optional free text)
-10. **Sampling Date**: Date of evaluation (DD/MM/YYYY format)
-11. **Clothing and Grooming**: Rating 1-5 (integer)
-12. **Working Attitude**: Rating 1-5 (integer)
-13. **Product Knowledge**: Rating 1-5 (integer)
-14. **Consulting Skill**: Rating 1-5 (integer)
-15. **Product Display**: Rating 1-5 (integer)
+2. **Evaluator**: Evaluator name from Evaluator sheet (column B)
+3. **Name**: Employee name from Member sheet (column B)
+4. **Area**: Selected area from Area sheet (column A)
+5. **Store**: Selected store from Store sheet (column A)
+6. **Branch**: Selected branch from Store sheet (column C)
+7. **Latitude**: GPS coordinates
+8. **Longitude**: GPS coordinates
+9. **Address**: Geocoded address from coordinates
+10. **Note**: General notes (optional free text)
+11. **Sampling Date**: Date of evaluation (DD/MM/YYYY format with "'" prefix)
+12. **Clothing and Grooming**: Rating 1-5 (integer)
+13. **Working Attitude**: Rating 1-5 (integer)
+14. **Product Knowledge**: Rating 1-5 (integer)
+15. **Consulting Skill**: Rating 1-5 (integer)
+16. **Product Display**: Rating 1-5 (integer)
 
 ## Evaluation Criteria
 

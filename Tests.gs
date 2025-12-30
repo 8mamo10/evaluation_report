@@ -6,6 +6,7 @@ function runAllTests() {
 
   try {
     testGetAddressFromCoordinates();
+    testGetEvaluatorList();
     testGetMemberList();
     testGetAreaList();
     testGetStoreList();
@@ -79,6 +80,29 @@ function testGetAddressFromCoordinates() {
   }
 
   console.log('✓ getAddressFromCoordinates tests completed');
+}
+
+// Test getEvaluatorList function
+function testGetEvaluatorList() {
+  console.log('Testing getEvaluatorList...');
+
+  try {
+    const evaluators = getEvaluatorList();
+    if (Array.isArray(evaluators)) {
+      console.log('✓ getEvaluatorList returns array');
+      console.log('Evaluators found:', evaluators.length);
+    } else {
+      throw new Error('getEvaluatorList should return an array');
+    }
+  } catch (error) {
+    if (error.message.includes('Spreadsheet ID is not set') ||
+        error.message.includes('Evaluator sheet') ||
+        error.message.includes('not found')) {
+      console.log('✓ getEvaluatorList correctly handles missing configuration');
+    } else {
+      throw error;
+    }
+  }
 }
 
 // Test getMemberList function
@@ -162,6 +186,7 @@ function testDoPostValidInput() {
   const mockEvent = {
     parameter: {
       authToken: validAuthToken,
+      evaluator: 'Test Evaluator',
       name: 'Test User',
       area: 'Test Area',
       latitude: '35.6762',
@@ -182,31 +207,34 @@ function testDoPostValidInput() {
   const mockSheet = {
     appendRow: function(data) {
       console.log('Mock appendRow called with:', data);
-      // Verify updated data structure (15 columns for evaluation system)
-      if (data.length !== 15) {
-        throw new Error('Expected 15 columns in data: timestamp, name, area, store, branch, latitude, longitude, address, note, samplingDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay');
+      // Verify updated data structure (16 columns for evaluation system)
+      if (data.length !== 16) {
+        throw new Error('Expected 16 columns in data: timestamp, evaluator, name, area, store, branch, latitude, longitude, address, note, samplingDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay');
       }
       if (typeof data[0] !== 'string' || !data[0].match(/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/)) {
         throw new Error('First column should be formatted timestamp (DD/MM/YYYY HH:MM:SS)');
       }
-      if (data[1] !== 'Test User') {
-        throw new Error('Second column should be name');
+      if (data[1] !== 'Test Evaluator') {
+        throw new Error('Second column should be evaluator');
       }
-      if (data[2] !== 'Test Area') {
-        throw new Error('Third column should be area');
+      if (data[2] !== 'Test User') {
+        throw new Error('Third column should be name');
       }
-      if (data[3] !== 'Test Store') {
-        throw new Error('Fourth column should be store');
+      if (data[3] !== 'Test Area') {
+        throw new Error('Fourth column should be area');
       }
-      if (data[4] !== 'Test Branch') {
-        throw new Error('Fifth column should be branch');
+      if (data[4] !== 'Test Store') {
+        throw new Error('Fifth column should be store');
+      }
+      if (data[5] !== 'Test Branch') {
+        throw new Error('Sixth column should be branch');
       }
       // Check that sampling date has prefix (starts with ')
-      if (!data[9] || typeof data[9] !== 'string' || !data[9].startsWith("'")) {
-        throw new Error('Tenth column should be sampling date with prefix');
+      if (!data[10] || typeof data[10] !== 'string' || !data[10].startsWith("'")) {
+        throw new Error('Eleventh column should be sampling date with prefix');
       }
-      if (data[10] !== 4) {
-        throw new Error('Eleventh column should be clothing/grooming rating (4)');
+      if (data[11] !== 4) {
+        throw new Error('Twelfth column should be clothing/grooming rating (4)');
       }
     }
   };
@@ -224,7 +252,8 @@ function testDoPostMissingParameters() {
 
   const testCases = [
     { parameter: { authToken: validAuthToken } }, // All missing
-    { parameter: { authToken: validAuthToken, name: 'Test' } }, // Missing area, coordinates, store, branch
+    { parameter: { authToken: validAuthToken, evaluator: 'Test Evaluator' } }, // Missing name, area, coordinates, store, branch
+    { parameter: { authToken: validAuthToken, evaluator: 'Test Evaluator', name: 'Test' } }, // Missing area, coordinates, store, branch
     { parameter: { authToken: validAuthToken, name: 'Test', area: 'Test Area' } }, // Missing coordinates, store, branch
     { parameter: { authToken: validAuthToken, name: 'Test', area: 'Test Area', latitude: '35.6762' } }, // Missing longitude, store, branch
     { parameter: { authToken: validAuthToken, name: 'Test', area: 'Test Area', latitude: '35.6762', longitude: '139.6503' } }, // Missing store, branch
@@ -267,6 +296,7 @@ function testDoPostWithStoreAndBranch() {
   const validEvent = {
     parameter: {
       authToken: validAuthToken,
+      evaluator: 'Test Evaluator',
       name: 'Test User',
       area: 'Main Area',
       latitude: '35.6762',
@@ -306,6 +336,7 @@ function testDoPostInvalidCoordinates() {
   const mockEvent = {
     parameter: {
       authToken: validAuthToken,
+      evaluator: 'Test Evaluator',
       name: 'Test User',
       area: 'Test Area',
       latitude: 'invalid',
@@ -362,13 +393,14 @@ function getTodayDateFormatted() {
 }
 
 // Helper function to create test data
-function createTestEvent(name, area, lat, lng, store, branch, note, samplingDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay) {
+function createTestEvent(evaluator, name, area, lat, lng, store, branch, note, samplingDate, clothingGrooming, workingAttitude, productKnowledge, consultingSkill, productDisplay) {
   // Generate a valid auth token for testing
   const validAuthToken = generateSessionToken();
 
   return {
     parameter: {
       authToken: validAuthToken,
+      evaluator: evaluator || 'Test Evaluator',
       name: name || '',
       area: area || 'Test Area',
       latitude: lat || '',
@@ -411,6 +443,7 @@ function testEvaluationRatingsValidation() {
   const invalidRatingEvent = {
     parameter: {
       authToken: validAuthToken,
+      evaluator: 'Test Evaluator',
       name: 'Test User',
       area: 'Test Area',
       latitude: '35.6762',
@@ -449,6 +482,7 @@ function testEvaluationRatingsValidation() {
   const validRatingsEvent = {
     parameter: {
       authToken: validAuthToken,
+      evaluator: 'Test Evaluator',
       name: 'Test User',
       area: 'Test Area',
       latitude: '35.6762',
