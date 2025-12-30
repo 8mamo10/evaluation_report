@@ -352,7 +352,7 @@
     // Login Logic
     // Check if already authenticated via sessionStorage
     window.addEventListener('load', function() {
-      const authToken = sessionStorage.getItem('merchandiserReportAuth');
+      const authToken = sessionStorage.getItem('pgEvaluationAuth');
       if (authToken) {
         // Verify the token is still valid
         google.script.run
@@ -362,13 +362,13 @@
               showMainForm();
             } else {
               // Token expired, show login
-              sessionStorage.removeItem('merchandiserReportAuth');
+              sessionStorage.removeItem('pgEvaluationAuth');
               showLogin();
             }
           })
           .withFailureHandler(function(error) {
             // Error checking token, show login
-            sessionStorage.removeItem('merchandiserReportAuth');
+            sessionStorage.removeItem('pgEvaluationAuth');
             showLogin();
           })
           .isAuthenticated(authToken);
@@ -396,7 +396,7 @@
         .withSuccessHandler(function(sessionToken) {
           if (sessionToken) {
             // Store token in sessionStorage
-            sessionStorage.setItem('merchandiserReportAuth', sessionToken);
+            sessionStorage.setItem('pgEvaluationAuth', sessionToken);
             showLoginMessage('Login successful! Loading form...', 'success');
 
             // Show main form
@@ -770,7 +770,7 @@
         params.set('evaluationDate', formatDateToDDMMYYYY(evaluationDateInput));
 
         // Add authentication token from sessionStorage
-        const authToken = sessionStorage.getItem('merchandiserReportAuth');
+        const authToken = sessionStorage.getItem('pgEvaluationAuth');
         if (!authToken) {
           messageDiv.textContent = 'Session expired. Please log in again.';
           messageDiv.className = 'error';
@@ -819,7 +819,7 @@
 
           // If authentication error, redirect to login
           if (data.message && data.message.includes('Authentication failed')) {
-            sessionStorage.removeItem('merchandiserReportAuth');
+            sessionStorage.removeItem('pgEvaluationAuth');
             setTimeout(function() {
               window.location.reload();
             }, 2000);

@@ -1,43 +1,43 @@
-# Merchandiser Report System
+# PG Evaluation System
 
-A Google Apps Script (GAS) based merchandiser reporting system that captures merchandiser data with location tracking and geocoding capabilities.
+A Google Apps Script (GAS) based PG evaluation system that captures employee performance evaluations with location tracking and geocoding capabilities.
 
 ## Features
 
-- **Location-based Merchandiser Tracking**: Automatically captures GPS coordinates and converts them to readable addresses
-- **Multi-field Data Capture**: Records comprehensive merchandiser information including counts, expiration dates, and notes
-- **Dynamic Dropdowns**: Load member names, areas, stores, and branches from Google Sheets
+- **Location-based Evaluation Tracking**: Automatically captures GPS coordinates and converts them to readable addresses
+- **5-Point Rating System**: Interactive star rating UI for five evaluation criteria
+- **Dynamic Dropdowns**: Load employee names, areas, stores, and branches from Google Sheets
 - **Real-time Validation**: Client and server-side validation for data integrity
 - **Mobile-friendly Interface**: Responsive design optimized for mobile devices
 - **Comprehensive Testing**: Full test suite with unit and integration tests
+- **Session-based Authentication**: Secure login with 24-hour token expiration
 
 ## Data Captured
 
-The system creates one record per product with inventory data. Each record contains:
+The system creates one evaluation record per submission. Each record contains:
 
 ### Required Fields
 
-- **Name**: User name (from Member sheet)
+- **Name**: Employee name (from Member sheet)
 - **Area**: Selected area (from Area sheet)
 - **Store**: Selected store (from Store sheet)
 - **Branch**: Selected branch (based on store selection)
 - **Location**: GPS coordinates (automatic)
-- **Product Inventory**: At least one product must have inventory data
+- **Evaluation Date**: Date of evaluation (DD-MM-YYYY format)
+- **Five Evaluation Ratings**: Each rated 1-5
+  - Clothing and Grooming
+  - Working Attitude
+  - Product Knowledge
+  - Consulting Skill
+  - Product Display
 
 ### Optional Fields
 
 - **Note**: General notes
 
-### Product-Specific Fields (per product tab)
-
-- **Bottle Count**: Number of bottles for this product
-- **Carton Count**: Number of cartons for this product
-- **Expiration Date**: Product expiration date (calendar picker)
-- **Product Note**: Product-specific notes
-
 ### Automatic Fields
 
-- **Timestamp**: Automatic timestamp
+- **Timestamp**: Automatic timestamp (DD/MM/YYYY HH:MM:SS)
 - **Address**: Geocoded address from GPS coordinates
 
 ## Google Sheets Structure
@@ -46,9 +46,9 @@ The system requires the following sheets in your Google Spreadsheet:
 
 ### Record Sheet
 
-Main data storage with 15 columns (one record per product):
+Main data storage with 15 columns (one record per evaluation):
 
-1. Timestamp
+1. Timestamp (DD/MM/YYYY HH:MM:SS)
 2. Name
 3. Area
 4. Store
@@ -57,16 +57,16 @@ Main data storage with 15 columns (one record per product):
 7. Longitude
 8. Address
 9. Note
-10. Product Type
-11. Product Name
-12. Bottle Count
-13. Carton Count
-14. Expiration Date
-15. Product Note
+10. Evaluation Date (DD-MM-YYYY)
+11. Clothing and Grooming (1-5)
+12. Working Attitude (1-5)
+13. Product Knowledge (1-5)
+14. Consulting Skill (1-5)
+15. Product Display (1-5)
 
 ### Member Sheet
 
-- **Column B**: Member names (starting from row 2)
+- **Column B**: Employee names (starting from row 2)
 
 ### Area Sheet
 
@@ -77,11 +77,6 @@ Main data storage with 15 columns (one record per product):
 - **Column A**: Store names (starting from row 2)
 - **Column B**: Area names (starting from row 2)
 - **Column C**: Branch names (starting from row 2)
-
-### Product Sheet
-
-- **Column A**: Product types (starting from row 2)
-- **Column B**: Product names (starting from row 2)
 
 ## Setup Instructions
 
@@ -95,8 +90,8 @@ Main data storage with 15 columns (one record per product):
 ### 2. Google Sheets Setup
 
 1. Create a new Google Spreadsheet
-2. Create the required sheets: Record, Member, Area, Store, Product
-3. Populate the Member, Area, Store, and Product sheets with your data
+2. Create the required sheets: Record, Member, Area, Store
+3. Populate the Member, Area, and Store sheets with your data
 4. Note the spreadsheet ID from the URL
 
 ### 3. Script Properties Configuration
@@ -109,8 +104,8 @@ Record_Sheet_Name: Name of your main record sheet
 Member_Sheet_Name: Name of your member sheet (default: 'Member')
 Area_Sheet_Name: Name of your area sheet (default: 'Area')
 Store_Sheet_Name: Name of your store sheet (default: 'Store')
-Product_Sheet_Name: Name of your product sheet (default: 'Product')
 Maps_API_KEY: Your Google Maps Geocoding API key
+Password: Your login password for authentication
 ```
 
 ### 4. Google Maps API Setup
@@ -129,15 +124,21 @@ Maps_API_KEY: Your Google Maps Geocoding API key
 ## Usage
 
 1. Access the deployed web application URL
-2. Fill in all required fields:
-   - Select your name from the dropdown
+2. Login with your password
+3. Fill in all required fields:
+   - Select employee name from the dropdown
    - Choose the area
    - Select store and branch
    - Add general notes if needed
-   - Use product tabs to enter inventory for each product (at least one required)
-   - For each product: enter bottle/carton counts, expiration date, and product notes
-3. Click "Register" to submit the data
-4. The system will automatically capture your location and save all data to the spreadsheet
+   - Select evaluation date using the calendar picker
+   - Rate each of the five evaluation criteria using the star rating system (1-5):
+     - Clothing and Grooming
+     - Working Attitude
+     - Product Knowledge
+     - Consulting Skill
+     - Product Display
+4. Click "Register" to submit the evaluation
+5. The system will automatically capture location and save all data to the spreadsheet
 
 ## Testing
 
@@ -209,4 +210,4 @@ For technical issues:
 
 ## License
 
-This project is provided as-is for merchandiser tracking purposes.
+This project is provided as-is for PG evaluation purposes.
