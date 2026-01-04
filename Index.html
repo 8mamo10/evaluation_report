@@ -56,6 +56,27 @@
       color: #ffd700;
     }
 
+    /* Color differentiation based on rating level */
+    .star.active.rating-1 {
+      color: #e74c3c; /* Red - Poor */
+    }
+
+    .star.active.rating-2 {
+      color: #e67e22; /* Orange - Below Average */
+    }
+
+    .star.active.rating-3 {
+      color: #f39c12; /* Dark Yellow - Average */
+    }
+
+    .star.active.rating-4 {
+      color: #f1c40f; /* Yellow - Good */
+    }
+
+    .star.active.rating-5 {
+      color: #2ecc71; /* Green - Excellent */
+    }
+
     .star:hover {
       color: #ffed4e;
     }
@@ -675,8 +696,13 @@
             // Update star display
             stars.forEach(s => {
               const starRating = parseInt(s.getAttribute('data-rating'));
+              // Remove all rating classes first
+              s.classList.remove('rating-1', 'rating-2', 'rating-3', 'rating-4', 'rating-5');
+
               if (starRating <= rating) {
                 s.classList.add('active');
+                // Add color class based on the selected rating level
+                s.classList.add('rating-' + rating);
               } else {
                 s.classList.remove('active');
               }
@@ -686,10 +712,20 @@
           // Hover effect
           star.addEventListener('mouseenter', function () {
             const rating = parseInt(this.getAttribute('data-rating'));
+            const currentRating = parseInt(hiddenInput.value) || 0;
+
             stars.forEach(s => {
               const starRating = parseInt(s.getAttribute('data-rating'));
               if (starRating <= rating) {
-                s.style.color = '#ffed4e';
+                // Show a lighter version of the rating color on hover
+                const hoverColors = {
+                  1: '#ff6b6b', // Lighter red
+                  2: '#ff9f66', // Lighter orange
+                  3: '#ffb84d', // Lighter dark yellow
+                  4: '#ffd966', // Lighter yellow
+                  5: '#5dde8c'  // Lighter green
+                };
+                s.style.color = hoverColors[rating];
               }
             });
           });
@@ -698,11 +734,8 @@
             const currentRating = parseInt(hiddenInput.value) || 0;
             stars.forEach(s => {
               const starRating = parseInt(s.getAttribute('data-rating'));
-              if (starRating <= currentRating) {
-                s.style.color = '#ffd700';
-              } else {
-                s.style.color = '#ddd';
-              }
+              // Clear inline styles to let CSS classes take over
+              s.style.color = '';
             });
           });
         });
